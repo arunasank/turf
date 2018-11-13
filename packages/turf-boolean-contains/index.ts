@@ -61,7 +61,7 @@ export default function booleanContains(feature1: Feature<any> | Geometry, featu
     case "Polygon":
         switch (type2) {
         case "Point":
-            return booleanPointInPolygon(geom2, geom1, {ignoreBoundary: true});
+            return booleanPointInPolygon(geom2, geom1, {ignoreBoundary: false});
         case "LineString":
             return isLineInPoly(geom1, geom2);
         case "Polygon":
@@ -122,7 +122,7 @@ export function isMultiPointOnLine(lineString: LineString, multiPoint: MultiPoin
 
 export function isMultiPointInPoly(polygon: Polygon, multiPoint: MultiPoint) {
     for (const coord of multiPoint.coordinates) {
-        if (!booleanPointInPolygon(coord, polygon, {ignoreBoundary: true})) {
+        if (!booleanPointInPolygon(coord, polygon, {ignoreBoundary: false})) {
             return false;
         }
     }
@@ -153,7 +153,7 @@ export function isLineInPoly(polygon: Polygon, linestring: LineString) {
     }
     for (i; i < linestring.coordinates.length - 1; i++) {
         const midPoint = getMidpoint(linestring.coordinates[i], linestring.coordinates[i + 1]);
-        if (booleanPointInPolygon({type: "Point", coordinates: midPoint}, polygon, { ignoreBoundary: true })) {
+        if (booleanPointInPolygon({type: "Point", coordinates: midPoint}, polygon, { ignoreBoundary: false })) {
             output = true;
             break;
         }
@@ -184,7 +184,7 @@ export function isPolyInPoly(feature1: Feature<Polygon>|Polygon, feature2: Featu
     const coords = getGeom(feature2).coordinates;
     for (const ring of coords) {
         for (const coord of ring) {
-            if (!booleanPointInPolygon(coord, feature1)) {
+            if (!booleanPointInPolygon(coord, feature1, {ignoreBoundary: false})) {
                 return false;
             }
         }
